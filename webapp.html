@@ -1,0 +1,49 @@
+<!doctype html>
+
+<html ng-app="WebApp">
+
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular-resource.js"></script>
+    <script src="https://sdk.amazonaws.com/js/aws-sdk-2.6.11.min.js"></script>
+    <script src="paho.javascript-1.0.2/mqttws31-min.js"></script>
+    <script src="webapp.js"></script>
+    <link rel="stylesheet" href="webapp.css">
+</head>
+
+<body>
+    <h1>MQTToverWebSocket WebApp for AWS IoT</h1>
+    <div ng-controller="WebAppController">
+        Things list (scrollable) :
+        <ul style="width: 500px; height: 360px; overflow: auto;overflow-y:scroll;border-style: solid;border-color:grey;list-style: none;">
+            <li ng-repeat="thing in things | orderBy:'thingTypeName' ">
+            <input type="checkbox" ng-model="thing.selected" ng-true-value="true" ng-false-value="false"> {{thing.thingName}} (type : {{thing.thingTypeName}})
+
+                <ul style="list-style: square;">
+                    <li ng-repeat="obj in thing.reported">
+                        {{obj.propName}} :
+                        <input ng-model="thing.state[$index].propValue" placeholder="State" type="text" style="width:50px;"> Desired : {{thing.desired[$index].propValue}} Reported : {{obj.propValue}} 
+                    </li>
+                </ul>
+
+
+            </li>
+        </ul>
+        <select ng-model="qos" ng-options="v for v in allowedQos" style="width:120px;">
+            <option value="" disabled selected>qos</option>
+        </select>
+        accessKeyId : <input type="text" ng-model="AWSCredentials.accessKeyId"> 
+        secretAccessKey : <input type="text" ng-model="AWSCredentials.secretAccessKey">
+        <button ng-click="start()" style="width:120px;">Start</button>
+        <br>
+        <br>
+        <button ng-click="set()" style="width:120px;">Set desired state</button>
+        <br>
+        <br>
+        <br>
+        <textarea ng-model="logs" readonly="readonly" style="height: 80px;width:500px;left: 5px;right: 5px;bottom: 10px;"></textarea>
+
+    </div>
+</body>
+
+</html>
